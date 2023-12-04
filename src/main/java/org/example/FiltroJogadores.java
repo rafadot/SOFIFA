@@ -3,6 +3,7 @@ package org.example;
 import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.CsvToBeanBuilder;
+import org.apache.commons.lang3.ObjectUtils;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -32,13 +33,14 @@ public class FiltroJogadores {
     }
 
     //Método para filtrar os jogadores com pase nos parâmetros fornecidos pelo usuário
-    public void filtraJogadores(String atributoFiltro , String valor, String ordem, int quantidade) throws IOException {
+    public void filtraJogadores(String[] dadosExibicao,String atributoFiltro , String valor,
+                                String ordem, int quantidade) throws IOException {
 
         /* Filtra os jogadores apenas pelo valor do atributo (EX: atributo = positions e valor = LW retorna apenas
          jogadores da posição LW) */
         List<Jogador> jogadoresFiltrados = new ArrayList<>(
                 jogadores.stream().filter(jogador -> {
-                    Map<String, Object> jogadorMap = jogador.getJogadorMapeado();
+                    TreeMap<String, Object> jogadorMap = jogador.getJogadorMapeado(dadosExibicao);
                     return jogadorMap.get(atributoFiltro).toString().equals(valor);
                 }).toList()
         );
@@ -64,10 +66,11 @@ public class FiltroJogadores {
         List<Jogador> listaSaida = new ArrayList<>(jogadoresFiltrados.stream().limit(quantidade).toList());
 
         for(Jogador j : listaSaida){
-            System.out.println(j.toString());
+            System.out.println(j.toString(dadosExibicao));
         }
 
-        converteObjetosEmCSV(listaSaida , CAMINHO_SAIDA_CSV+listaSaida.get(0).getId() + ".csv");
+        Random r = new Random();
+        converteObjetosEmCSV(listaSaida , CAMINHO_SAIDA_CSV+ r.nextInt() + ".csv" , dadosExibicao);
     }
     //end
 
@@ -81,36 +84,25 @@ public class FiltroJogadores {
     //end
 
     //Recebe uma lista de objetos e converte para csv
-    public void converteObjetosEmCSV(List<Jogador> jogadores, String caminho) throws IOException {
-         Writer writer = new FileWriter(caminho);
+    public void converteObjetosEmCSV(List<Jogador> jogadores, String pastaCaminho
+            , String[] dadosExibicao) throws IOException {
+         Writer writer = new FileWriter(pastaCaminho);
          CSVWriter csvWriter = new CSVWriter(writer);
 
-            // Cria o cabeçalho do CSV
-            String[] header = {"id", "name", "full_name", "birth_date", "age",
-                    "height_cm", "weight_kgs", "positions", "nationality",
-                    "overall_rating", "potential", "value_euro", "wage_euro", "preferred_foot"};
-            //end
-
-            csvWriter.writeNext(header);
+         // Cria o cabeçalho do CSV
+         csvWriter.writeNext(dadosExibicao);
+         //end
 
             // Escreve cada objeto Jogador no CSV
             for (Jogador jogador : jogadores) {
-                csvWriter.writeNext(new String[]{
-                        String.valueOf(jogador.getId()),
-                        jogador.getName(),
-                        jogador.getFullName(),
-                        jogador.getBirthDate(),
-                        String.valueOf(jogador.getAge()),
-                        String.valueOf(jogador.getHeightCm()),
-                        String.valueOf(jogador.getWeightKgs()),
-                        jogador.getPositions(),
-                        jogador.getNationality(),
-                        String.valueOf(jogador.getOverallRating()),
-                        String.valueOf(jogador.getPotential()),
-                        String.valueOf(jogador.getValueEuro()),
-                        String.valueOf(jogador.getWageEuro()),
-                        jogador.getPreferredFoot()
-                });
+                csvWriter.writeNext(
+                        jogador.getJogadorMapeado(dadosExibicao)
+                                .values()
+                                .stream()
+                                .map(Object::toString)
+                                .toList()
+                                .toArray(new String[0])
+                );
             }
 
             csvWriter.close();

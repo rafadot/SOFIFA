@@ -10,21 +10,28 @@ public class Main {
         FiltroJogadores filtro = new FiltroJogadores();
 
         //Diálogo
-        System.out.println("Digite o nome do atributo para filtrar o jogador");
+        print("Digite o nome dos atributos que deseja exibir na busca:");
+        String dadosExibicao = entrada.nextLine();
+
+        print("Digite o nome do atributo para filtrar o jogador:");
         String atributoFiltro = entrada.nextLine();
 
-        System.out.println("Digite o valor do atributo para filtrar o jogador");
+        print("Digite o valor do atributo para filtrar o jogador:");
         String valorFiltrado = entrada.nextLine();
 
-        System.out.println("Digite a ordem do filtro (ASC para ascendente / DESC para descendente)");
+        print("Digite a ordem do filtro (ASC para ascendente / DESC para descendente):");
         String ordem = entrada.next();
 
-        System.out.println("Digite a quantidade máxima");
+        print("Digite a quantidade máxima:");
         int quantidade = entrada.nextInt();
         // end
 
-        filtro.filtraJogadores(atributoFiltro,valorFiltrado,ordem,quantidade);
+        print("Dados filtrados abaixo:");
+        filtro.filtraJogadores(dadosExibicao.split(" "),atributoFiltro,valorFiltrado,ordem,quantidade);
+    }
 
-//        filtro.imprimeTodosJogadores();
+    static void print(String texto){
+        System.out.println("-------------------------------------------------------------------------------");
+        System.out.println(texto);
     }
 }

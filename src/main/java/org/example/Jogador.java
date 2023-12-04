@@ -4,8 +4,7 @@ import com.opencsv.bean.CsvBindByName;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.TreeMap;
 
 @Getter
 @Setter
@@ -55,48 +54,44 @@ public class Jogador implements Comparable<Jogador>{
     //end
 
     //Imprime o objeto em "formato JSON"
-    public String toString() {
-        StringBuilder sb = new StringBuilder("jogador{\n");
+    public String toString(String[] dadosExibicao) {
+        StringBuilder sb = new StringBuilder("jogador{");
 
-        sb.append("  \"id\":").append(id).append(",\n");
-        sb.append("  \"name\":\"").append(name).append("\",\n");
-        sb.append("  \"fullName\":\"").append(fullName).append("\",\n");
-        sb.append("  \"birthDate\":\"").append(birthDate).append("\",\n");
-        sb.append("  \"age\":").append(age).append(",\n");
-        sb.append("  \"heightCm\":").append(heightCm).append(",\n");
-        sb.append("  \"weightKgs\":").append(weightKgs).append(",\n");
-        sb.append("  \"positions\":\"").append(positions).append("\",\n");
-        sb.append("  \"nationality\":\"").append(nationality).append("\",\n");
-        sb.append("  \"overallRating\":").append(overallRating).append(",\n");
-        sb.append("  \"potential\":").append(potential).append(",\n");
-        sb.append("  \"valueEuro\":").append(valueEuro).append(",\n");
-        sb.append("  \"wageEuro\":").append(wageEuro).append(",\n");
-        sb.append("  \"preferredFoot\":\"").append(preferredFoot).append("\"\n");
+        for(var jogador : getJogadorMapeado(dadosExibicao).entrySet()){
+            sb.append("\n  ").append(jogador.getKey()).append(" : ")
+                    .append(jogador.getValue().toString()).append(",");
+        }
 
-        sb.append("}");
+        sb.append("\n}");
 
         return sb.toString();
     }
     //end
 
     //Retorna um Map de todos os atributos do objeto com seus valores
-    public Map<String , Object> getJogadorMapeado(){
-        Map<String, Object> jogador = new HashMap<>();
-
+    public TreeMap<String , Object> getJogadorMapeado(String[] dadosExibicao){
+        TreeMap<String, Object> jogador = new TreeMap<>();
         jogador.put("id", id);
-        jogador.put("name", name);
-        jogador.put("fullName", fullName);
-        jogador.put("birthDate", birthDate);
-        jogador.put("age", age);
-        jogador.put("heightCm", heightCm);
-        jogador.put("weightKgs", weightKgs);
-        jogador.put("positions", positions);
-        jogador.put("nationality", nationality);
-        jogador.put("overallRating", overallRating);
-        jogador.put("potential", potential);
-        jogador.put("valueEuro", valueEuro);
-        jogador.put("wageEuro", wageEuro);
-        jogador.put("preferredFoot", preferredFoot);
+
+        for (String dado : dadosExibicao) {
+            switch (dado) {
+                case "name" -> jogador.put("name", name);
+                case "fullName" -> jogador.put("fullName", fullName);
+                case "birthDate" -> jogador.put("birthDate", birthDate);
+                case "age" -> jogador.put("age", age);
+                case "heightCm" -> jogador.put("heightCm", heightCm);
+                case "weightKgs" -> jogador.put("weightKgs", weightKgs);
+                case "positions" -> jogador.put("positions", positions);
+                case "nationality" -> jogador.put("nationality", nationality);
+                case "overallRating" -> jogador.put("overallRating", overallRating);
+                case "potential" -> jogador.put("potential", potential);
+                case "valueEuro" -> jogador.put("valueEuro", valueEuro);
+                case "wageEuro" -> jogador.put("wageEuro", wageEuro);
+                case "preferredFoot" -> jogador.put("preferredFoot", preferredFoot);
+                
+                default -> System.out.println("Dado de exibição inválido: " + dado);
+            }
+        }
 
         return jogador;
     }
