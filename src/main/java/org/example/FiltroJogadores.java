@@ -90,7 +90,9 @@ public class FiltroJogadores {
          CSVWriter csvWriter = new CSVWriter(writer);
 
          // Cria o cabeçalho do CSV
-         csvWriter.writeNext(dadosExibicao);
+         csvWriter.writeNext(
+                 jogadores.get(0).getJogadorMapeado(dadosExibicao).keySet().toArray(new String [0])
+         );
          //end
 
             // Escreve cada objeto Jogador no CSV
